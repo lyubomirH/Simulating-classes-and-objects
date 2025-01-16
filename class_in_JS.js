@@ -13,92 +13,74 @@ class Student {
 
 let students = [];
 
-function addStudent(firstName, lastName, grade, numberInClass) {
+// Функция за добавяне на студент
+document.getElementById('studentForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const firstName = document.getElementById('firstName').value;
+    const lastName = document.getElementById('lastName').value;
+    let grade = parseFloat(document.getElementById('grade').value);
+    const numberInClass = parseInt(document.getElementById('numberInClass').value);
+
+    // Проверка за оценка в диапазона от 2 до 6
+    if (grade < 2 || grade > 6) {
+        alert('Оценката трябва да бъде между 2 и 6.');
+        return;
+    }
+
+    // Проверка за максимум две цифри след десетичната запетая
+    const gradeRegex = /^\d(\.\d{1,2})?$/;
+    if (!gradeRegex.test(grade)) {
+        alert('Оценката трябва да има максимум две цифри след десетичната запетая.');
+        return;
+    }
+
+    // Проверка за положителен номер в класа
+    if (numberInClass <= 0) {
+        alert('Номерът в класа трябва да бъде положително число.');
+        return;
+    }
+
     let isNumberDuplicate = students.some(student => student.numberInClass === numberInClass);
 
     if (isNumberDuplicate) {
-        console.log(`This ID number already exists. Please try again.`);
+        alert('Този номер в класа вече съществува!');
         return;
     }
 
     let student = new Student(firstName, lastName, grade, numberInClass);
     students.push(student);
-    console.log(`Student ${student.getFullName()} has been successfully added!`);
+    updateTable();
+    document.getElementById('studentForm').reset();
+});
+
+// Функция за обновяване на таблицата с всички студенти
+function updateTable() {
+    const tableBody = document.getElementById('studentsTable').getElementsByTagName('tbody')[0];
+    tableBody.innerHTML = '';
+
+    students.forEach(student => {
+        let row = tableBody.insertRow();
+        row.insertCell(0).innerText = student.getFullName();
+        row.insertCell(1).innerText = student.grade;
+        row.insertCell(2).innerText = student.numberInClass;
+    });
 }
 
-function findStudentByName(name) {
-    let foundStudents = students.filter(student => student.getFullName().includes(name));
-    if (foundStudents.length === 0) {
-        console.log(`No students found with the name "${name}".`);
-    } else {
-        console.log(`Found Students:`);
-        foundStudents.forEach(student => {
-            console.log(`- ${student.getFullName()}, Grade: ${student.grade}, ID: ${student.numberInClass}`);
-        });
-    }
-}
-
+// Функция за сортиране на студентите по име
 function sortStudentsByName() {
-    return students.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
+    students.sort((a, b) => a.getFullName().localeCompare(b.getFullName()));
+    updateTable();
 }
 
+// Функция за сортиране на студентите по номер
 function sortStudentsByNumber() {
-    return students.sort((a, b) => a.numberInClass - b.numberInClass);
+    students.sort((a, b) => a.numberInClass - b.numberInClass);
+    updateTable();
 }
 
+// Функция за сортиране на студентите по оценка
 function sortStudentsByGrade() {
-    return students.sort((a, b) => b.grade - a.grade);
+    students.sort((a, b) => b.grade - a.grade);
+    updateTable();
 }
-
-function startInteractiveMode() {
-    const prompt = require('prompt-sync')();
-
-    while (true) {
-        console.log("\nAvailable Commands:");
-        console.log("1. 'add' - Add a new student");
-        console.log("2. 'sortName' - Sort students by name");
-        console.log("3. 'sortNumber' - Sort students by ID number");
-        console.log("4. 'sortGrade' - Sort students by grade");
-        console.log("5. 'exit' - Exit the program");
-
-        let command = prompt("Enter a command: ").trim().toLowerCase();
-
-        if (command === "add") {
-            let firstName = prompt("Enter first name: ");
-            let lastName = prompt("Enter last name: ");
-            let grade = parseInt(prompt("Enter grade: "));
-            let numberInClass = parseInt(prompt("Enter student ID number: "));
-            addStudent(firstName, lastName, grade, numberInClass);
-        } 
-        else if (command === "sortname") {
-            let sortedStudents = sortStudentsByName();
-            console.log("Sorted Students by Name:");
-            sortedStudents.forEach(student => {
-                console.log(`${student.getFullName()}, ID: ${student.numberInClass}, Grade: ${student.grade}`);
-            });
-        } 
-        else if (command === "sortnumber") {
-            let sortedStudents = sortStudentsByNumber();
-            console.log("Sorted Students by ID Number:");
-            sortedStudents.forEach(student => {
-                console.log(`${student.getFullName()}, ID: ${student.numberInClass}, Grade: ${student.grade}`);
-            });
-        }
-        else if (command === "sortgrade") {
-            let sortedStudents = sortStudentsByGrade();
-            console.log("Sorted Students by Grade:");
-            sortedStudents.forEach(student => {
-                console.log(`${student.getFullName()}, ID: ${student.numberInClass}, Grade: ${student.grade}`);
-            });
-        }
-        else if (command === "exit") {
-            console.log("Exiting the program.");
-            break;
-        }
-        else {
-            console.log("Unknown command. Please try again.");
-        }
-    }
-}
-
-startInteractiveMode();

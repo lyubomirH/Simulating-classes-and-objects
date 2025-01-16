@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система за управление на студенти</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Система за управление на студенти</h1>
+
+        <form id="studentForm">
+            <input type="text" id="firstName" placeholder="Първо име" required>
+            <input type="text" id="lastName" placeholder="Фамилия" required>
+            <input type="number" id="grade" placeholder="Оценка (от 2 до 6)" step="0.01" min="2" max="6" required>
+            <input type="number" id="numberInClass" placeholder="Номер в класа" min="1" required>
+            <button type="submit">Добави студент</button>
+        </form>
+
+        <div>
+            <button onclick="sortStudentsByName()">Сортирай по име</button>
+            <button onclick="sortStudentsByNumber()">Сортирай по номер</button>
+            <button onclick="sortStudentsByGrade()">Сортирай по оценка</button>
+        </div>
+
+        <table id="studentsTable">
+            <thead>
+                <tr>
+                    <th>Име</th>
+                    <th>Оценка</th>
+                    <th>Номер в класа</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+
+    <script src="class_in_JS.js"></script>
+
+</body>
+</html>
